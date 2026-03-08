@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VapeShop Mini App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Telegram WebApp SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:20px">
+  <div class="app-selector">
+    <button class="app-btn active" onclick="showApp('client')">🛍️ Клиент</button>
+    <button class="app-btn" onclick="showApp('admin')">🛡️ Админ</button>
+  </div>
+
+  <div class="phones-container">
+
+    <!-- ======== CLIENT APP ======== -->
+    <div class="phone-frame" id="client-app">
+
+      <!-- SUB SCREENS -->
+      <div class="sub-screen" id="sub-orders">
+        <div class="sub-header">
+          <button class="sub-back" onclick="closeSub('sub-orders')">‹</button>
+          <span class="sub-title">Мои заказы</span>
+        </div>
+        <div class="sub-content">
+          <div class="order-card">
+            <div class="order-header">
+              <div><div class="order-num">Заказ #1042</div><div class="order-date">23 мая 2025</div></div>
+              <span class="order-status status-delivered">Доставлен</span>
+            </div>
+            <div class="order-items">Blackberry Ice × 2<br>Mango Ice 20mg × 1</div>
+            <div class="order-total">Итого: $55.80</div>
+          </div>
+          <div class="order-card">
+            <div class="order-header">
+              <div><div class="order-num">Заказ #1038</div><div class="order-date">18 мая 2025</div></div>
+              <span class="order-status status-transit">В пути</span>
+            </div>
+            <div class="order-items">GeekVape Aegis × 1<br>Berry Mix 20mg × 3</div>
+            <div class="order-total">Итого: $102.00</div>
+          </div>
+          <div class="order-card">
+            <div class="order-header">
+              <div><div class="order-num">Заказ #1031</div><div class="order-date">10 мая 2025</div></div>
+              <span class="order-status status-processing">Обрабатывается</span>
+            </div>
+            <div class="order-items">Elf Bar 600 × 5<br>Vaporesso Kit × 1</div>
+            <div class="order-total">Итого: $90.00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-screen" id="sub-support">
+        <div class="sub-header">
+          <button class="sub-back" onclick="closeSub('sub-support')">‹</button>
+          <span class="sub-title">Поддержка</span>
+        </div>
+        <div class="sub-content">
+          <div style="margin-bottom:20px">
+            <div class="support-contact" onclick="showToast('Открываем Telegram...')">
+              <div class="support-icon">💬</div>
+              <div class="support-text"><div class="support-title">Telegram</div><div class="support-sub">@vapeshop_support</div></div>
+              <span style="color:var(--gray)">›</span>
+            </div>
+            <div class="support-contact" onclick="showToast('Звоним...')">
+              <div class="support-icon">📞</div>
+              <div class="support-text"><div class="support-title">Телефон</div><div class="support-sub">+7 800 555 35 35</div></div>
+              <span style="color:var(--gray)">›</span>
+            </div>
+            <div class="support-contact" onclick="showToast('Открываем email...')">
+              <div class="support-icon">📧</div>
+              <div class="support-text"><div class="support-title">Email</div><div class="support-sub">support@vapeshop.ru</div></div>
+              <span style="color:var(--gray)">›</span>
+            </div>
+          </div>
+          <div style="font-family:var(--font-head);font-size:13px;color:var(--white);margin-bottom:12px;font-weight:700">FAQ</div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Как отследить заказ? ›</div>
+            <div class="faq-a">Перейдите в раздел «Мои заказы» в профиле. Там отображается статус и трек-номер вашего заказа.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Как вернуть товар? ›</div>
+            <div class="faq-a">Возврат возможен в течение 14 дней с момента получения. Свяжитесь с поддержкой.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Как начисляются бонусы? ›</div>
+            <div class="faq-a">1 балл = 1 рубль. За каждую покупку начисляется 5% от суммы в бонусных баллах.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-screen" id="sub-personal">
+        <div class="sub-header">
+          <button class="sub-back" onclick="closeSub('sub-personal')">‹</button>
+          <span class="sub-title">Личные данные</span>
+        </div>
+        <div class="sub-content">
+          <div style="display:flex;justify-content:center;margin-bottom:24px">
+            <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-size:36px;border:3px solid rgba(200,160,92,0.3)">👤</div>
+          </div>
+          <div class="profile-form">
+            <div class="form-group"><label>Имя</label><input class="form-input" value="Алексей Петров" /></div>
+            <div class="form-group"><label>Email</label><input class="form-input" type="email" value="aleksey@mail.ru" /></div>
+            <div class="form-group"><label>Телефон</label><input class="form-input" value="+7 999 123 45 67" /></div>
+            <div class="form-group"><label>Дата рождения</label><input class="form-input" type="date" value="1995-06-15" /></div>
+            <button class="save-btn" onclick="showToast('Данные сохранены ✓')">Сохранить</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-screen" id="sub-payment">
+        <div class="sub-header">
+          <button class="sub-back" onclick="closeSub('sub-payment')">‹</button>
+          <span class="sub-title">Способы оплаты</span>
+        </div>
+        <div class="sub-content">
+          <div class="payment-card">
+            <span class="card-icon">💳</span>
+            <div class="card-info"><div class="card-number">•••• •••• •••• 4242</div><div class="card-type">Visa · до 12/27</div></div>
+            <span class="card-default">Основная</span>
+          </div>
+          <div class="payment-card">
+            <span class="card-icon">🏦</span>
+            <div class="card-info"><div class="card-number">•••• •••• •••• 8800</div><div class="card-type">Mastercard · до 08/26</div></div>
+          </div>
+          <div class="payment-card">
+            <span class="card-icon">📱</span>
+            <div class="card-info"><div class="card-number">SberPay</div><div class="card-type">Привязан к номеру</div></div>
+          </div>
+          <button class="add-card-btn" onclick="showToast('Добавление карты...')">＋ Добавить карту</button>
+        </div>
+      </div>
+
+      <div class="sub-screen" id="sub-address">
+        <div class="sub-header">
+          <button class="sub-back" onclick="closeSub('sub-address')">‹</button>
+          <span class="sub-title">Адреса доставки</span>
+        </div>
+        <div class="sub-content">
+          <div class="address-card">
+            <div class="address-type">🏠 Дом</div>
+            <div class="address-text">г. Москва, ул. Тверская, д.12, кв.34<br>Подъезд 2, этаж 5, код 1234</div>
+          </div>
+          <div class="address-card">
+            <div class="address-type">🏢 Работа</div>
+            <div class="address-text">г. Москва, Ленинградский пр-т, д.80<br>Бизнес-центр «Олимп», офис 412</div>
+          </div>
+          <button class="add-card-btn" onclick="showToast('Добавление адреса...')">＋ Добавить адрес</button>
+        </div>
+      </div>
+
+      <!-- SCREEN: HOME -->
+      <div class="screen active" id="screen-home">
+        <div class="status-bar light"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
+        <div class="top-nav">
+          <button class="nav-icon-btn" onclick="showToast('Новый заказ')">＋</button>
+          <h1>Главная</h1>
+          <button class="nav-icon-btn" onclick="goTo('screen-cart')"><span style="font-size:18px">🛒</span></button>
+        </div>
+        <div class="search-bar">
+          <span>🔍</span>
+          <input type="text" placeholder="Поиск" oninput="filterProducts(this.value)" />
+          <span>☰</span>
+        </div>
+        <div class="categories" id="home-cats">
+          <div class="cat-chip active" onclick="filterCat('all', this)"><span class="cat-icon">🔥</span>Популярное</div>
+          <div class="cat-chip" onclick="filterCat('liquid', this)"><span class="cat-icon">💧</span>Жидкости</div>
+          <div class="cat-chip" onclick="filterCat('pod', this)"><span class="cat-icon">⚡</span>POD системы</div>
+          <div class="cat-chip" onclick="filterCat('disposable', this)"><span class="cat-icon">🔋</span>Одноразки</div>
+          <div class="cat-chip" onclick="filterCat('accessories', this)"><span class="cat-icon">🔧</span>Расходники</div>
+        </div>
+        <div class="products-grid" id="products-grid"></div>
+        <div class="bottom-nav">
+          <button class="nav-item active" onclick="goTo('screen-home')"><span>🏠</span><span class="nav-label">Главная</span></button>
+          <button class="nav-item" onclick="goTo('screen-catalog')"><span>📋</span><span class="nav-label">Каталог</span></button>
+          <button class="nav-item" onclick="goTo('screen-cart')">
+            <div class="nav-item-wrap"><span>🛒</span><span class="nav-badge" id="cart-badge">0</span></div>
+            <span class="nav-label">Корзина</span>
+          </button>
+          <button class="nav-item" onclick="goTo('screen-profile')"><span>👤</span><span class="nav-label">Профиль</span></button>
+        </div>
+      </div>
+
+      <!-- SCREEN: CATALOG -->
+      <div class="screen" id="screen-catalog">
+        <div class="status-bar light"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
+        <div class="top-nav"><div style="width:36px"></div><h1>Каталог</h1><div style="width:36px"></div></div>
+        <div class="categories" id="catalog-cats">
+          <div class="cat-chip active" onclick="filterCatCatalog('all', this)">Все</div>
+          <div class="cat-chip" onclick="filterCatCatalog('liquid', this)">💧 Жидкости</div>
+          <div class="cat-chip" onclick="filterCatCatalog('pod', this)">⚡ POD</div>
+          <div class="cat-chip" onclick="filterCatCatalog('disposable', this)">🔋 Одноразки</div>
+          <div class="cat-chip" onclick="filterCatCatalog('accessories', this)">🔧 Расходники</div>
+        </div>
+        <div class="products-grid" id="catalog-grid" style="padding-bottom:90px"></div>
+        <div class="bottom-nav">
+          <button class="nav-item" onclick="goTo('screen-home')"><span>🏠</span><span class="nav-label">Главная</span></button>
+          <button class="nav-item active" onclick="goTo('screen-catalog')"><span>📋</span><span class="nav-label">Каталог</span></button>
+          <button class="nav-item" onclick="goTo('screen-cart')">
+            <div class="nav-item-wrap"><span>🛒</span><span class="nav-badge" id="cart-badge2">0</span></div>
+            <span class="nav-label">Корзина</span>
+          </button>
+          <button class="nav-item" onclick="goTo('screen-profile')"><span>👤</span><span class="nav-label">Профиль</span></button>
+        </div>
+      </div>
+
+      <!-- SCREEN: PRODUCT DETAIL -->
+      <div class="screen dark" id="screen-detail">
+        <div class="detail-hero" id="detail-hero">
+          <button class="detail-back" onclick="goBack()">‹</button>
+          <span id="detail-emoji" style="position:relative;z-index:1"></span>
+        </div>
+        <div class="detail-content">
+          <div class="detail-title" id="detail-name"></div>
+          <div class="detail-specs" id="detail-specs"></div>
+          <div class="detail-price-row">
+            <div class="detail-price" id="detail-price"></div>
+            <div style="display:flex;gap:6px">
+              <button class="qty-btn minus" id="detail-qty-minus" onclick="changeDetailQty(-1)">−</button>
+              <span class="qty-num" id="detail-qty">1</span>
+              <button class="qty-btn plus" onclick="changeDetailQty(1)">+</button>
+            </div>
+          </div>
+          <div class="detail-actions">
+            <button class="btn-primary" onclick="addDetailToCart()">🛒 Добавить в корзину</button>
+            <button class="btn-outline" id="fav-btn" onclick="toggleFav()">♡ В избр.</button>
+          </div>
+          <div class="detail-section">
+            <div class="detail-section-title">Вкус</div>
+            <div id="detail-flavor"></div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-section-title">Характеристики</div>
+            <div class="char-grid" id="detail-chars"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN: CART -->
+      <div class="screen" id="screen-cart" style="background:var(--bg-light)">
+        <div class="status-bar light"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
+        <div class="top-nav"><button class="nav-icon-btn" onclick="goBack()">‹</button><h1>Корзина</h1><span style="font-size:20px">🛒</span></div>
+        <div class="cart-content" id="cart-content"></div>
+        <div class="cart-footer" id="cart-footer"></div>
+        <div class="bottom-nav">
+          <button class="nav-item" onclick="goTo('screen-home')"><span>🏠</span><span class="nav-label">Главная</span></button>
+          <button class="nav-item" onclick="goTo('screen-catalog')"><span>📋</span><span class="nav-label">Каталог</span></button>
+          <button class="nav-item active" onclick="goTo('screen-cart')">
+            <div class="nav-item-wrap"><span>🛒</span><span class="nav-badge" id="cart-badge3">0</span></div>
+            <span class="nav-label">Корзина</span>
+          </button>
+          <button class="nav-item" onclick="goTo('screen-profile')"><span>👤</span><span class="nav-label">Профиль</span></button>
+        </div>
+      </div>
+
+      <!-- SCREEN: PROFILE -->
+      <div class="screen dark" id="screen-profile">
+        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
+        <div style="overflow-y:auto;flex:1;padding-bottom:80px">
+          <div class="profile-header">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-name">Алексей Петров</div>
+            <div class="profile-email">aleksey@mail.ru</div>
+          </div>
+          <div class="age-banner">
+            <span class="age-icon">🔞</span>
+            <span class="age-text">Подтвердите, что вам есть 18 лет</span>
+            <span style="color:var(--gold);font-size:18px">›</span>
+          </div>
+          <div class="bonus-row">
+            <span class="bonus-label">Мои бонусы</span>
+            <div class="bonus-val"><span>1200</span> <small>баллов</small></div>
+          </div>
+          <div class="menu-section">
+            <div class="menu-item" onclick="openSub('sub-orders')">
+              <div class="menu-item-icon">📦</div>
+              <div class="menu-item-text"><div class="menu-item-title">Мои заказы</div><div class="menu-item-sub">История покупок</div></div>
+              <span class="menu-badge">3</span><span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item" onclick="openSub('sub-support')">
+              <div class="menu-item-icon">💬</div>
+              <div class="menu-item-text"><div class="menu-item-title">Поддержка</div><div class="menu-item-sub">Помощь и FAQ</div></div>
+              <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item" onclick="openSub('sub-personal')">
+              <div class="menu-item-icon">👤</div>
+              <div class="menu-item-text"><div class="menu-item-title">Личные данные</div><div class="menu-item-sub">Имя, email, телефон</div></div>
+              <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item" onclick="openSub('sub-payment')">
+              <div class="menu-item-icon">💳</div>
+              <div class="menu-item-text"><div class="menu-item-title">Способы оплаты</div><div class="menu-item-sub">Карты и кошельки</div></div>
+              <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item" onclick="openSub('sub-address')">
+              <div class="menu-item-icon">📍</div>
+              <div class="menu-item-text"><div class="menu-item-title">Адреса доставки</div><div class="menu-item-sub">2 сохранённых адреса</div></div>
+              <span class="menu-arrow">›</span>
+            </div>
+            <div class="menu-item" onclick="showToast('Выход из аккаунта...')">
+              <div class="menu-item-icon">🚪</div>
+              <div class="menu-item-text"><div class="menu-item-title" style="color:var(--red)">Выйти</div></div>
+              <span class="menu-arrow">›</span>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav dark">
+          <button class="nav-item dark-nav" onclick="goTo('screen-home')"><span>🏠</span><span class="nav-label">Главная</span></button>
+          <button class="nav-item dark-nav" onclick="goTo('screen-catalog')"><span>📋</span><span class="nav-label">Каталог</span></button>
+          <button class="nav-item dark-nav" onclick="goTo('screen-cart')">
+            <div class="nav-item-wrap"><span>🛒</span><span class="nav-badge" id="cart-badge4">0</span></div>
+            <span class="nav-label">Корзина</span>
+          </button>
+          <button class="nav-item dark-nav active" onclick="goTo('screen-profile')"><span>👤</span><span class="nav-label">Профиль</span></button>
+        </div>
+      </div>
+
+    </div><!-- /client-app -->
+
+    <!-- ======== ADMIN APP ======== -->
+    <div class="phone-frame dark-theme" id="admin-app" style="display:none">
+
+      <div class="admin-screen active" id="admin-login-screen">
+        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
+        <div class="admin-login">
+          <div class="admin-logo">
+            <span class="admin-logo-icon">🛡️</span>
+            <div class="admin-logo-title">VapeShop Admin</div>
+            <div class="admin-logo-sub">Панель управления</div>
+          </div>
+          <div class="admin-form">
+            <input class="admin-input" id="admin-user" placeholder="Логин" value="admin" />
+            <input class="admin-input" id="admin-pass" type="password" placeholder="Пароль" value="admin" />
+            <button class="admin-login-btn" onclick="adminLogin()">Войти</button>
+            <div class="admin-hint">Логин: admin · Пароль: admin</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-screen" id="admin-dashboard">
+        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
+        <div class="admin-top">
+          <div><div class="admin-greeting">Добро пожаловать,</div><div class="admin-title">Администратор</div></div>
+          <button class="admin-logout-btn" onclick="adminLogout()">Выйти</button>
+        </div>
+        <div class="admin-content">
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">Выручка сегодня</div><div class="stat-val">$842</div><div class="stat-change stat-up">↑ 12% вчера</div></div>
+            <div class="stat-card"><div class="stat-label">Заказов</div><div class="stat-val">24</div><div class="stat-change stat-up">↑ 3 новых</div></div>
+            <div class="stat-card"><div class="stat-label">Клиентов</div><div class="stat-val">187</div><div class="stat-change stat-up">↑ 5 новых</div></div>
+            <div class="stat-card"><div class="stat-label">Ср. чек</div><div class="stat-val">$35</div><div class="stat-change stat-down">↓ 2%</div></div>
+          </div>
+          <div class="low-stock-alert"><span class="alert-icon">⚠️</span><span class="alert-text">3 товара заканчиваются на складе</span></div>
+          <div class="admin-section">
+            <div class="admin-section-header">
+              <span class="admin-section-title">Последние заказы</span>
+              <button class="see-all-btn" onclick="adminGoTo('admin-orders')">Все заказы</button>
+            </div>
+            <div class="admin-order-card">
+              <div class="admin-order-top"><div><div class="admin-order-id">#1047</div><div class="admin-order-time">5 мин назад</div></div><span class="order-status status-processing">Новый</span></div>
+              <div class="admin-order-info">Иван С. · +7 999 111 22 33<br>Blackberry Ice × 2, Mango Ice × 1</div>
+              <div class="admin-order-footer"><span class="admin-order-total">$55.80</span><select class="status-select" onchange="showToast('Статус обновлён')"><option>Обрабатывается</option><option>В работе</option><option>В доставке</option><option>Завершён</option></select></div>
+            </div>
+            <div class="admin-order-card">
+              <div class="admin-order-top"><div><div class="admin-order-id">#1046</div><div class="admin-order-time">23 мин назад</div></div><span class="order-status status-transit">В пути</span></div>
+              <div class="admin-order-info">Мария П. · +7 926 555 77 88<br>GeekVape Aegis × 1</div>
+              <div class="admin-order-footer"><span class="admin-order-total">$54.00</span><select class="status-select" onchange="showToast('Статус обновлён')"><option>В доставке</option><option>Завершён</option></select></div>
+            </div>
+          </div>
+          <div class="admin-section">
+            <div class="admin-section-header"><span class="admin-section-title">Товары</span><button class="see-all-btn" onclick="adminGoTo('admin-products')">Управление</button></div>
+            <div id="dash-products"></div>
+          </div>
+        </div>
+        <div class="admin-nav">
+          <button class="admin-nav-item active" onclick="adminGoTo('admin-dashboard')"><span>📊</span><span class="admin-nav-label">Главная</span></button>
+          <button class="admin-nav-item" onclick="adminGoTo('admin-orders')"><span>📦</span><span class="admin-nav-label">Заказы</span></button>
+          <button class="admin-nav-item" onclick="adminGoTo('admin-products')"><span>🏪</span><span class="admin-nav-label">Товары</span></button>
+          <button class="admin-nav-item" onclick="adminGoTo('admin-settings')"><span>⚙️</span><span class="admin-nav-label">Настройки</span></button>
+        </div>
+      </div>
+
+      <div class="admin-screen" id="admin-orders">
+        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
+        <div class="admin-top" style="padding-bottom:10px"><div><div class="admin-greeting">Управление</div><div class="admin-title">Заказы</div></div></div>
+        <div style="padding:0 16px 10px;flex-shrink:0">
+          <div class="admin-tabs">
+            <button class="admin-tab active" onclick="filterOrders('all',this)">Все</button>
+            <button class="admin-tab" onclick="filterOrders('new',this)">Новые</button>
+            <button class="admin-tab" onclick="filterOrders('transit',this)">В пути</button>
+            <button class="admin-tab" onclick="filterOrders('done',this)">Готово</button>
+          </div>
+        </div>
+        <div class="admin-content" id="admin-orders-list" style="padding:0 16px"></div>
+        <div class="admin-nav">
+          <button class="admin-nav-item" onclick="adminGoTo('admin-dashboard')"><span>📊</span><span class="admin-nav-label">Главная</span></button>
+          <button class="admin-nav-item active" onclick="adminGoTo('admin-orders')"><span>📦</span><span class="admin-nav-label">Заказы</span></button>
+          <button class="admin-nav-item" onclick="adminGoTo('admin-products')"><span>🏪</span><span class="admin-nav-label">Товары</span></button>
+          <button class="admin-nav-item" onclick="adminGoTo('admin-settings')"><span>⚙️</span><span class="admin-nav-label">Настройки</span></button>
+        </div>
+      </div>
+
+      <div class="admin-screen" id="admin-products">
+        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
+        <div class="admin-top" style="padding-bottom:10px"><div><div class="admin-greeting">Управление</div><div class="admin-title">Товары</div></div></div>
+        <div class="admin-content">
+          <div class="add-product-section">
+            <div class="add-product-title">＋ Добавить товар</div>
+            <div class="add-product-form">
+              <input class="add-input" id="new-name" placeholder="Название товара" />
+              <div class="add-form-row">
+                <input class="add-input" id="new-price" placeholder="Цена ($)" type="number" />
+                <input class="add-input" id="new-stock" placeholder="Кол-во" type="number" />
+              </div>
+              <select class="add-input" id="new-cat">
+                <option value="liquid">💧 Жидкости</option>
+                <option value="pod">⚡ POD системы</option>
+                <option value="disposable">🔋 Одноразки</option>
+                <option value="accessories">🔧 Расходники</option>
+              </select>
+              <button class="add-submit-btn" onclick="addAdminProduct()">Добавить товар</button>
+            </div>
+          </div>
+          <div class="admin-section" style="padding-top:0">
+            <div class="admin-section-header"><span class="admin-section-title">Все товары (<span id="product-count">0</span>)</span></div>
+            <div id="admin-products-list"></div>
+          </div>
+        </div>
+        <div class="admin-nav">
+          <button class="admin-nav-item" onclick="adminGoTo('admin-dashboard')"><span>📊</span><span class="admin-nav-label">Главная</span></button>
+          <button class="admin-nav-item" onclick="adminGoTo('admin-orders')"><span>📦</span><span class="admin-nav-label">Заказы</span></button>
+          <button class="admin-nav-item active" onclick="adminGoTo('admin-products')"><span>🏪</span><span class="admin-nav-label">Товары</span></button>
+          <button class="admin-nav-item" onclick="adminGoTo('admin-settings')"><span>⚙️</span><span class="admin-nav-label">Настройки</span></button>
+        </div>
+      </div>
+
+      <!-- ADMIN SETTINGS -->
+      <div class="admin-screen" id="admin-settings">
+        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
+        <div class="admin-top"><div><div class="admin-greeting">Панель</div><div class="admin-title">Настройки</div></div></div>
+        <div class="admin-content" style="padding:0 16px">
+          <div style="margin-bottom:16px">
+            <div style="background:var(--dark2);border-radius:var(--radius);overflow:hidden;border:1px solid var(--dark3)">
+              <div class="menu-item" style="padding:14px 16px;border-bottom:1px solid var(--dark3)" onclick="openAdminSub('asub-profile')">
+                <div class="menu-item-icon">👤</div>
+                <div class="menu-item-text"><div class="menu-item-title" style="color:var(--white)">Профиль администратора</div><div class="menu-item-sub">Имя, email, аватар</div></div>
+                <span class="menu-arrow">›</span>
+              </div>
+              <div class="menu-item" style="padding:14px 16px;border-bottom:1px solid var(--dark3)" onclick="openAdminSub('asub-shop')">
+                <div class="menu-item-icon">🏪</div>
+                <div class="menu-item-text"><div class="menu-item-title" style="color:var(--white)">Настройки магазина</div><div class="menu-item-sub">Название, адрес, режим работы</div></div>
+                <span class="menu-arrow">›</span>
+              </div>
+              <div class="menu-item" style="padding:14px 16px;border-bottom:1px solid var(--dark3)" onclick="openAdminSub('asub-notif')">
+                <div class="menu-item-icon">🔔</div>
+                <div class="menu-item-text"><div class="menu-item-title" style="color:var(--white)">Уведомления</div><div class="menu-item-sub">Заказы, остатки, акции</div></div>
+                <span class="menu-arrow">›</span>
+              </div>
+              <div class="menu-item" style="padding:14px 16px" onclick="openAdminSub('asub-security')">
+                <div class="menu-item-icon">🔒</div>
+                <div class="menu-item-text"><div class="menu-item-title" style="color:var(--white)">Безопасность</div><div class="menu-item-sub">Пароль, двухфакторка</div></div>
+                <span class="menu-arrow">›</span>
+              </div>
+            </div>
+          </div>
+          <button onclick="adminLogout()" style="width:100%;padding:16px;background:rgba(224,82,82,0.12);border:1.5px solid rgba(224,82,82,0.3);border-radius:14px;color:var(--red);font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font-body)">🚪 Выйти из панели</button>
+        </div>
+        <div class="admin-nav">
+          <button class="admin-nav-item" onclick="adminGoTo('admin-dashboard')"><span>📊</span><span class="admin-nav-label">Главная</span></button>
+          <button class="admin-nav-item" onclick="adminGoTo('admin-orders')"><span>📦</span><span class="admin-nav-label">Заказы</span></button>
+          <button class="admin-nav-item" onclick="adminGoTo('admin-products')"><span>🏪</span><span class="admin-nav-label">Товары</span></button>
+          <button class="admin-nav-item active" onclick="adminGoTo('admin-settings')"><span>⚙️</span><span class="admin-nav-label">Настройки</span></button>
+        </div>
+
+        <!-- Admin Settings Sub-screens -->
+        <div class="sub-screen" id="asub-profile" style="background:var(--dark)">
+          <div class="sub-header"><button class="sub-back" onclick="closeAdminSub('asub-profile')">‹</button><span class="sub-title">Профиль администратора</span></div>
+          <div class="sub-content">
+            <div style="display:flex;justify-content:center;margin-bottom:24px;flex-direction:column;align-items:center;gap:10px">
+              <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-size:36px;border:3px solid rgba(200,160,92,0.3)">🛡️</div>
+              <button onclick="showToast('Изменить фото...')" style="background:rgba(200,160,92,0.15);border:1px solid rgba(200,160,92,0.3);color:var(--gold);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body)">Изменить фото</button>
+            </div>
+            <div class="profile-form">
+              <div class="form-group"><label>Имя</label><input class="form-input" id="aname" value="Администратор" /></div>
+              <div class="form-group"><label>Email</label><input class="form-input" id="aemail" type="email" value="admin@vapeshop.ru" /></div>
+              <div class="form-group"><label>Телефон</label><input class="form-input" id="aphone" value="+7 999 000 00 00" /></div>
+              <div class="form-group"><label>Должность</label><input class="form-input" id="arole" value="Главный администратор" /></div>
+              <button class="save-btn" onclick="saveAdminProfile()">Сохранить изменения</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-screen" id="asub-shop" style="background:var(--dark)">
+          <div class="sub-header"><button class="sub-back" onclick="closeAdminSub('asub-shop')">‹</button><span class="sub-title">Настройки магазина</span></div>
+          <div class="sub-content">
+            <div class="profile-form">
+              <div class="form-group"><label>Название магазина</label><input class="form-input" id="sname" value="VapeShop" /></div>
+              <div class="form-group"><label>Город</label><input class="form-input" id="scity" value="Москва" /></div>
+              <div class="form-group"><label>Адрес</label><input class="form-input" id="saddr" value="ул. Тверская, д.15" /></div>
+              <div class="form-group"><label>Телефон магазина</label><input class="form-input" id="sphone" value="+7 800 555 35 35" /></div>
+              <div class="form-group"><label>Режим работы</label><input class="form-input" id="shours" value="10:00 – 22:00, без выходных" /></div>
+              <div class="form-group"><label>Минимальный заказ ($)</label><input class="form-input" id="sminorder" type="number" value="15" /></div>
+              <div style="background:var(--dark2);border-radius:12px;padding:14px 16px;border:1px solid var(--dark3);display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-size:14px;color:var(--white);font-weight:600">Магазин открыт</div><div style="font-size:12px;color:var(--gray);margin-top:2px">Принимаем заказы</div></div>
+                <label class="toggle-switch"><input type="checkbox" id="store-open" checked onchange="showToast(this.checked?'Магазин открыт ✓':'Магазин закрыт')"><span class="toggle-slider"></span></label>
+              </div>
+              <button class="save-btn" onclick="saveShopSettings()">Сохранить</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-screen" id="asub-notif" style="background:var(--dark)">
+          <div class="sub-header"><button class="sub-back" onclick="closeAdminSub('asub-notif')">‹</button><span class="sub-title">Уведомления</span></div>
+          <div class="sub-content">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="background:var(--dark2);border-radius:12px;padding:14px 16px;border:1px solid var(--dark3);display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-size:14px;color:var(--white);font-weight:600">Новые заказы</div><div style="font-size:12px;color:var(--gray);margin-top:2px">Push при новом заказе</div></div>
+                <label class="toggle-switch"><input type="checkbox" checked onchange="showToast('Настройка сохранена')"><span class="toggle-slider"></span></label>
+              </div>
+              <div style="background:var(--dark2);border-radius:12px;padding:14px 16px;border:1px solid var(--dark3);display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-size:14px;color:var(--white);font-weight:600">Остатки товаров</div><div style="font-size:12px;color:var(--gray);margin-top:2px">Предупреждение при &lt; 5 шт</div></div>
+                <label class="toggle-switch"><input type="checkbox" checked onchange="showToast('Настройка сохранена')"><span class="toggle-slider"></span></label>
+              </div>
+              <div style="background:var(--dark2);border-radius:12px;padding:14px 16px;border:1px solid var(--dark3);display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-size:14px;color:var(--white);font-weight:600">Отменённые заказы</div><div style="font-size:12px;color:var(--gray);margin-top:2px">При отмене клиентом</div></div>
+                <label class="toggle-switch"><input type="checkbox" checked onchange="showToast('Настройка сохранена')"><span class="toggle-slider"></span></label>
+              </div>
+              <div style="background:var(--dark2);border-radius:12px;padding:14px 16px;border:1px solid var(--dark3);display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-size:14px;color:var(--white);font-weight:600">Ежедневный отчёт</div><div style="font-size:12px;color:var(--gray);margin-top:2px">В 21:00 каждый день</div></div>
+                <label class="toggle-switch"><input type="checkbox" onchange="showToast('Настройка сохранена')"><span class="toggle-slider"></span></label>
+              </div>
+              <div style="background:var(--dark2);border-radius:12px;padding:14px 16px;border:1px solid var(--dark3);display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-size:14px;color:var(--white);font-weight:600">Email-рассылка</div><div style="font-size:12px;color:var(--gray);margin-top:2px">Акции и новинки</div></div>
+                <label class="toggle-switch"><input type="checkbox" onchange="showToast('Настройка сохранена')"><span class="toggle-slider"></span></label>
+              </div>
+              <div class="form-group" style="margin-top:8px"><label style="color:var(--gray);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Порог остатка (шт)</label>
+                <input class="form-input" type="number" value="5" onchange="showToast('Порог обновлён')" /></div>
+              <button class="save-btn" onclick="showToast('Настройки уведомлений сохранены ✓')">Сохранить всё</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-screen" id="asub-security" style="background:var(--dark)">
+          <div class="sub-header"><button class="sub-back" onclick="closeAdminSub('asub-security')">‹</button><span class="sub-title">Безопасность</span></div>
+          <div class="sub-content">
+            <div style="background:rgba(82,192,122,0.1);border:1px solid rgba(82,192,122,0.3);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:20px">
+              <span style="font-size:18px">✅</span><span style="font-size:13px;color:var(--green);font-weight:600">Аккаунт защищён</span>
+            </div>
+            <div class="profile-form">
+              <div style="font-family:var(--font-head);font-size:13px;color:var(--gold);font-weight:700;margin-bottom:4px">Смена пароля</div>
+              <div class="form-group"><label>Текущий пароль</label><input class="form-input" type="password" placeholder="••••••••" id="cur-pass"/></div>
+              <div class="form-group"><label>Новый пароль</label><input class="form-input" type="password" placeholder="••••••••" id="new-pass"/></div>
+              <div class="form-group"><label>Подтвердите пароль</label><input class="form-input" type="password" placeholder="••••••••" id="conf-pass"/></div>
+              <button class="save-btn" onclick="changePassword()">Изменить пароль</button>
+              <div style="font-family:var(--font-head);font-size:13px;color:var(--gold);font-weight:700;margin:16px 0 12px">2FA Аутентификация</div>
+              <div style="background:var(--dark2);border-radius:12px;padding:14px 16px;border:1px solid var(--dark3);display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <div><div style="font-size:14px;color:var(--white);font-weight:600">2FA через SMS</div><div style="font-size:12px;color:var(--gray);margin-top:2px">+7 999 ••• •• 00</div></div>
+                <label class="toggle-switch"><input type="checkbox" onchange="showToast(this.checked?'2FA включён':'2FA выключен')"><span class="toggle-slider"></span></label>
+              </div>
+              <div style="font-family:var(--font-head);font-size:13px;color:var(--gold);font-weight:700;margin-bottom:12px">Активные сессии</div>
+              <div style="background:var(--dark2);border-radius:12px;padding:14px 16px;border:1px solid var(--dark3);margin-bottom:8px">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                  <div><div style="font-size:13px;color:var(--white);font-weight:600">📱 iPhone 14 Pro</div><div style="font-size:11px;color:var(--green);margin-top:3px">● Текущая сессия</div></div>
+                  <span style="font-size:11px;color:var(--gray)">Москва</span>
+                </div>
+              </div>
+              <div style="background:var(--dark2);border-radius:12px;padding:14px 16px;border:1px solid var(--dark3)">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                  <div><div style="font-size:13px;color:var(--white);font-weight:600">💻 MacBook Pro</div><div style="font-size:11px;color:var(--gray);margin-top:3px">2 дня назад</div></div>
+                  <button onclick="showToast('Сессия завершена')" style="font-size:11px;color:var(--red);background:rgba(224,82,82,0.1);border:1px solid rgba(224,82,82,0.3);padding:4px 10px;border-radius:8px;cursor:pointer;font-family:var(--font-body)">Завершить</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /admin-settings -->
+
+    </div><!-- /admin-app -->
+  </div><!-- /phones-container -->
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
