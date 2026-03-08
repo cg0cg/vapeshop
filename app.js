@@ -430,3 +430,30 @@ function changePassword() {
 }
 
 renderProducts('products-grid', PRODUCTS);
+
+// ==================== TELEGRAM INIT ====================
+// Инициализация Telegram WebApp
+if (window.Telegram && window.Telegram.WebApp) {
+  window.Telegram.WebApp.ready();
+  window.Telegram.WebApp.expand(); // Разворачиваем на весь экран
+}
+
+// Определяем режим по URL параметру (?mode=admin)
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get('mode');
+  const screen = params.get('screen');
+
+  if (mode === 'admin') {
+    // Показываем админку, скрываем клиент
+    document.getElementById('client-app').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+  } else {
+    // Показываем клиент (по умолчанию)
+    document.getElementById('client-app').style.display = 'block';
+    document.getElementById('admin-app').style.display = 'none';
+    // Если указан конкретный экран
+    if (screen === 'catalog') goTo('screen-catalog');
+    else if (screen === 'cart') goTo('screen-cart');
+  }
+})();

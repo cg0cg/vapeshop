@@ -28,27 +28,28 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: var(--font-body);
-  background: #2a2a2a;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  gap: 30px;
-  flex-wrap: wrap;
-  padding: 20px;
+  background: var(--bg-light);
+  margin: 0;
+  padding: 0;
 }
 
 .phone-frame {
-  width: 390px;
-  height: 844px;
+  width: 100vw;
+  height: 100vh;
   background: var(--bg-light);
-  border-radius: 44px;
+  border-radius: 0;
   overflow: hidden;
-  position: relative;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1);
-  flex-shrink: 0;
+  position: fixed;
+  top: 0; left: 0;
+  box-shadow: none;
 }
 
 .phone-frame.dark-theme { background: var(--dark); }
@@ -1090,26 +1091,8 @@ body {
 }
 .toast.show { opacity: 1; }
 
-/* ==================== PHONE SELECTOR ==================== */
-.app-selector {
-  display: flex; gap: 12px; margin-bottom: 20px;
-  width: 100%; justify-content: center;
-}
-.app-btn {
-  padding: 10px 24px;
-  border-radius: 24px;
-  border: 2px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
-  color: white;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: var(--font-head);
-  transition: all 0.2s;
-}
-.app-btn.active { background: var(--gold); border-color: var(--gold); }
-
-.phones-container { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
+/* ==================== TELEGRAM MODE ==================== */
+/* app-selector hidden in Telegram — switching done via URL ?mode=admin */
 
 /* ==================== TOGGLE SWITCH ==================== */
 .toggle-switch { position: relative; display: inline-block; width: 46px; height: 26px; flex-shrink: 0; }

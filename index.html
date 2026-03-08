@@ -12,15 +12,7 @@
 </head>
 <body>
 
-<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:20px">
-  <div class="app-selector">
-    <button class="app-btn active" onclick="showApp('client')">🛍️ Клиент</button>
-    <button class="app-btn" onclick="showApp('admin')">🛡️ Админ</button>
-  </div>
-
-  <div class="phones-container">
-
-    <!-- ======== CLIENT APP ======== -->
+<!-- ======== CLIENT APP ======== -->
     <div class="phone-frame" id="client-app">
 
       <!-- SUB SCREENS -->
@@ -76,7 +68,7 @@
             </div>
             <div class="support-contact" onclick="showToast('Открываем email...')">
               <div class="support-icon">📧</div>
-              <div class="support-text"><div class="support-title">Email</div><div class="support-sub">support@vapeshop.ru</div></div>
+              <div class="support-text"><div class="support-title">Email</div><div class="support-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="34474144445b46407442554451475c5b441a4641">[email&#160;protected]</a></div></div>
               <span style="color:var(--gray)">›</span>
             </div>
           </div>
@@ -267,7 +259,7 @@
           <div class="profile-header">
             <div class="profile-avatar">👤</div>
             <div class="profile-name">Алексей Петров</div>
-            <div class="profile-email">aleksey@mail.ru</div>
+            <div class="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="62030e070911071b220f030b0e4c1017">[email&#160;protected]</a></div>
           </div>
           <div class="age-banner">
             <span class="age-icon">🔞</span>
@@ -578,17 +570,4 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div><!-- /admin-settings -->
-
-    </div><!-- /admin-app -->
-  </div><!-- /phones-container -->
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<script src="app.js"></script>
-</body>
-</html>
+   
