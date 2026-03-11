@@ -441,7 +441,6 @@ body {
   font-weight: 700;
   margin-bottom: 3px;
 }
-.profile-email { font-size: 13px; color: rgba(255,255,255,0.5); }
 .age-banner {
   margin: 16px;
   background: rgba(200,160,92,0.1);
@@ -1158,6 +1157,27 @@ body {
   top: 0 !important; left: 0 !important;
   box-shadow: none !important;
 }
+
+/* ==================== FLAVOR DROPDOWN ON CARD ==================== */
+.product-card { position: relative; overflow: visible !important; }
+.flavor-dropdown-wrap { position: relative; margin-top: 8px; }
+.flavor-select {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(200,160,92,0.4);
+  background: rgba(200,160,92,0.08);
+  color: var(--dark);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  appearance: auto;
+}
+.flavor-select:focus { outline: none; border-color: var(--gold); }
+.add-btn-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.add-btn-row .product-price { flex: 1; }
+
 </style>
 </head>
 <body>
@@ -1196,6 +1216,7 @@ body {
             <div class="order-items">Elf Bar 600 × 5<br>Vaporesso Kit × 1</div>
             <div class="order-total">Итого: $90.00</div>
           </div>
+          <button onclick="clearOrders()" style="width:100%;margin-top:16px;padding:14px;background:rgba(224,82,82,0.12);border:1.5px solid rgba(224,82,82,0.3);border-radius:14px;color:var(--red);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-body)">🗑 Очистить историю заказов</button>
         </div>
       </div>
 
@@ -1211,26 +1232,15 @@ body {
               <div class="support-text"><div class="support-title">Telegram</div><div class="support-sub">@vapeshop_support</div></div>
               <span style="color:var(--gray)">›</span>
             </div>
-            <div class="support-contact" onclick="showToast('Звоним...')">
-              <div class="support-icon">📞</div>
-              <div class="support-text"><div class="support-title">Телефон</div><div class="support-sub">+7 800 555 35 35</div></div>
-              <span style="color:var(--gray)">›</span>
-            </div>
-            <div class="support-contact" onclick="showToast('Открываем email...')">
-              <div class="support-icon">📧</div>
-              <div class="support-text"><div class="support-title">Email</div><div class="support-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="72010702021d00063204130217011a1d025c0007">[email&#160;protected]</a></div></div>
-              <span style="color:var(--gray)">›</span>
-            </div>
+
+
           </div>
           <div style="font-family:var(--font-head);font-size:13px;color:var(--white);margin-bottom:12px;font-weight:700">FAQ</div>
           <div class="faq-item" onclick="toggleFaq(this)">
             <div class="faq-q">Как отследить заказ? ›</div>
             <div class="faq-a">Перейдите в раздел «Мои заказы» в профиле. Там отображается статус и трек-номер вашего заказа.</div>
           </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-q">Как вернуть товар? ›</div>
-            <div class="faq-a">Возврат возможен в течение 14 дней с момента получения. Свяжитесь с поддержкой.</div>
-          </div>
+
           <div class="faq-item" onclick="toggleFaq(this)">
             <div class="faq-q">Как начисляются бонусы? ›</div>
             <div class="faq-a">1 балл = 1 рубль. За каждую покупку начисляется 5% от суммы в бонусных баллах.</div>
@@ -1247,12 +1257,22 @@ body {
           <div style="display:flex;justify-content:center;margin-bottom:24px">
             <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-size:36px;border:3px solid rgba(200,160,92,0.3)">👤</div>
           </div>
-          <div class="profile-form">
-            <div class="form-group"><label>Имя</label><input class="form-input" value="Алексей Петров" /></div>
-            <div class="form-group"><label>Email</label><input class="form-input" type="email" value="aleksey@mail.ru" /></div>
-            <div class="form-group"><label>Телефон</label><input class="form-input" value="+7 999 123 45 67" /></div>
-            <div class="form-group"><label>Дата рождения</label><input class="form-input" type="date" value="1995-06-15" /></div>
-            <button class="save-btn" onclick="showToast('Данные сохранены ✓')">Сохранить</button>
+          <div style="background:var(--dark2);border-radius:var(--radius);overflow:hidden;border:1px solid var(--dark3)">
+            <div style="padding:14px 16px;border-bottom:1px solid var(--dark3)">
+              <div style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Имя</div>
+              <div id="tg-name" style="font-size:15px;color:var(--white);font-weight:600">—</div>
+            </div>
+            <div style="padding:14px 16px;border-bottom:1px solid var(--dark3)">
+              <div style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Username</div>
+              <div id="tg-username" style="font-size:15px;color:var(--white);font-weight:600">—</div>
+            </div>
+            <div style="padding:14px 16px">
+              <div style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Telegram ID</div>
+              <div id="tg-id" style="font-size:15px;color:var(--white);font-weight:600">—</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding:12px 14px;background:rgba(200,160,92,0.1);border:1px solid rgba(200,160,92,0.2);border-radius:12px;font-size:12px;color:rgba(245,240,232,0.6);line-height:1.6">
+            📱 Данные загружаются автоматически из вашего профиля Telegram
           </div>
         </div>
       </div>
@@ -1300,7 +1320,6 @@ body {
 
       <!-- SCREEN: HOME -->
       <div class="screen active" id="screen-home">
-        <div class="status-bar light"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
         <div class="top-nav">
           <button class="nav-icon-btn" onclick="showToast('Новый заказ')">＋</button>
           <h1>Главная</h1>
@@ -1332,7 +1351,6 @@ body {
 
       <!-- SCREEN: CATALOG -->
       <div class="screen" id="screen-catalog">
-        <div class="status-bar light"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
         <div class="top-nav"><div style="width:36px"></div><h1>Каталог</h1><div style="width:36px"></div></div>
         <div class="categories" id="catalog-cats">
           <div class="cat-chip active" onclick="filterCatCatalog('all', this)">Все</div>
@@ -1387,7 +1405,6 @@ body {
 
       <!-- SCREEN: CART -->
       <div class="screen" id="screen-cart" style="background:var(--bg-light)">
-        <div class="status-bar light"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
         <div class="top-nav"><button class="nav-icon-btn" onclick="goBack()">‹</button><h1>Корзина</h1><span style="font-size:20px">🛒</span></div>
         <div class="cart-content" id="cart-content"></div>
         <div class="cart-footer" id="cart-footer"></div>
@@ -1404,12 +1421,10 @@ body {
 
       <!-- SCREEN: PROFILE -->
       <div class="screen dark" id="screen-profile">
-        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
         <div style="overflow-y:auto;flex:1;padding-bottom:80px">
           <div class="profile-header">
             <div class="profile-avatar">👤</div>
             <div class="profile-name">Алексей Петров</div>
-            <div class="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="caaba6afa1b9afb38aa7aba3a6e4b8bf">[email&#160;protected]</a></div>
           </div>
           <div class="age-banner">
             <span class="age-icon">🔞</span>
@@ -1418,7 +1433,7 @@ body {
           </div>
           <div class="bonus-row">
             <span class="bonus-label">Мои бонусы</span>
-            <div class="bonus-val"><span>1200</span> <small>баллов</small></div>
+            <div class="bonus-val"><span>0</span> <small>баллов</small></div>
           </div>
           <div class="menu-section">
             <div class="menu-item" onclick="openSub('sub-orders')">
@@ -1434,24 +1449,12 @@ body {
             </div>
             <div class="menu-item" onclick="openSub('sub-personal')">
               <div class="menu-item-icon">👤</div>
-              <div class="menu-item-text"><div class="menu-item-title">Личные данные</div><div class="menu-item-sub">Имя, email, телефон</div></div>
+              <div class="menu-item-text"><div class="menu-item-title">Личные данные</div><div class="menu-item-sub">Имя и телефон</div></div>
               <span class="menu-arrow">›</span>
             </div>
-            <div class="menu-item" onclick="openSub('sub-payment')">
-              <div class="menu-item-icon">💳</div>
-              <div class="menu-item-text"><div class="menu-item-title">Способы оплаты</div><div class="menu-item-sub">Карты и кошельки</div></div>
-              <span class="menu-arrow">›</span>
-            </div>
-            <div class="menu-item" onclick="openSub('sub-address')">
-              <div class="menu-item-icon">📍</div>
-              <div class="menu-item-text"><div class="menu-item-title">Адреса доставки</div><div class="menu-item-sub">2 сохранённых адреса</div></div>
-              <span class="menu-arrow">›</span>
-            </div>
-            <div class="menu-item" onclick="showToast('Выход из аккаунта...')">
-              <div class="menu-item-icon">🚪</div>
-              <div class="menu-item-text"><div class="menu-item-title" style="color:var(--red)">Выйти</div></div>
-              <span class="menu-arrow">›</span>
-            </div>
+
+
+
           </div>
         </div>
         <div class="bottom-nav dark">
@@ -1472,7 +1475,6 @@ body {
 
       <!-- ADMIN LOGIN SCREEN -->
       <div class="admin-screen active" id="admin-login-screen">
-        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
         <div class="admin-login">
           <div class="admin-logo">
             <span class="admin-logo-icon">🛡️</span>
@@ -1490,7 +1492,6 @@ body {
 
       <!-- ADMIN DASHBOARD -->
       <div class="admin-screen" id="admin-dashboard">
-        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
         <div class="admin-top">
           <div>
             <div class="admin-greeting">Добро пожаловать,</div>
@@ -1546,7 +1547,6 @@ body {
 
       <!-- ADMIN ORDERS -->
       <div class="admin-screen" id="admin-orders">
-        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
         <div class="admin-top" style="padding-bottom:10px">
           <div><div class="admin-greeting">Управление</div><div class="admin-title">Заказы</div></div>
         </div>
@@ -1569,7 +1569,6 @@ body {
 
       <!-- ADMIN PRODUCTS -->
       <div class="admin-screen" id="admin-products">
-        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
         <div class="admin-top" style="padding-bottom:10px">
           <div><div class="admin-greeting">Управление</div><div class="admin-title">Товары</div></div>
         </div>
@@ -1582,12 +1581,27 @@ body {
                 <input class="add-input" id="new-price" placeholder="Цена ($)" type="number" />
                 <input class="add-input" id="new-stock" placeholder="Кол-во" type="number" />
               </div>
-              <select class="add-input" id="new-cat">
+              <select class="add-input" id="new-cat" onchange="toggleAdminFields(this.value)">
                 <option value="liquid">💧 Жидкости</option>
                 <option value="pod">⚡ POD системы</option>
                 <option value="disposable">🔋 Одноразки</option>
                 <option value="accessories">🔧 Расходники</option>
               </select>
+              <div id="field-flavors">
+                <input class="add-input" id="new-flavors" placeholder="Вкусы через запятую: Малина, Манго, Лёд" />
+              </div>
+              <div id="field-acc-type" style="display:none">
+                <select class="add-input" id="new-acc-type">
+                  <option value="Испаритель">🔥 Испаритель</option>
+                  <option value="Картридж">💊 Картридж</option>
+                  <option value="Батарейка">🔋 Батарейка</option>
+                  <option value="Зарядное">⚡ Зарядное устройство</option>
+                  <option value="Дрип-тип">💨 Дрип-тип</option>
+                  <option value="Хлопок">🧵 Хлопок</option>
+                  <option value="Провод">🔌 Провод</option>
+                  <option value="Другое">📦 Другое</option>
+                </select>
+              </div>
               <button class="add-submit-btn" onclick="addAdminProduct()">Добавить товар</button>
             </div>
           </div>
@@ -1606,14 +1620,13 @@ body {
 
       <!-- ADMIN SETTINGS -->
       <div class="admin-screen" id="admin-settings">
-        <div class="status-bar dark-bar"><span>11:41</span><div class="status-icons">📶 🔋</div></div>
         <div class="admin-top"><div><div class="admin-greeting">Панель</div><div class="admin-title">Настройки</div></div></div>
         <div class="admin-content" style="padding:0 16px">
           <div style="margin-bottom:16px">
             <div style="background:var(--dark2);border-radius:var(--radius);overflow:hidden;border:1px solid var(--dark3)">
               <div class="menu-item" style="padding:14px 16px;border-bottom:1px solid var(--dark3)" onclick="openAdminSub('asub-profile')">
                 <div class="menu-item-icon">👤</div>
-                <div class="menu-item-text"><div class="menu-item-title" style="color:var(--white)">Профиль администратора</div><div class="menu-item-sub">Имя, email, аватар</div></div>
+              <div class="menu-item-text"><div class="menu-item-title" style="color:var(--white)">Профиль администратора</div><div class="menu-item-sub">Имя и аватар</div></div>
                 <span class="menu-arrow">›</span>
               </div>
               <div class="menu-item" style="padding:14px 16px;border-bottom:1px solid var(--dark3)" onclick="openAdminSub('asub-shop')">
@@ -1655,7 +1668,6 @@ body {
             </div>
             <div class="profile-form">
               <div class="form-group"><label>Имя</label><input class="form-input" id="aname" value="Администратор" /></div>
-              <div class="form-group"><label>Email</label><input class="form-input" id="aemail" type="email" value="admin@vapeshop.ru" /></div>
               <div class="form-group"><label>Телефон</label><input class="form-input" id="aphone" value="+7 999 000 00 00" /></div>
               <div class="form-group"><label>Должность</label><input class="form-input" id="arole" value="Главный администратор" /></div>
               <button class="save-btn" onclick="saveAdminProfile()">Сохранить изменения</button>
@@ -1770,22 +1782,10 @@ body {
     </div><!-- /admin-app -->
 
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ==================== DATA ====================
-const PRODUCTS = [
-  { id:1, name:'Berry Mix', sub:'20mg', price:16, emoji:'🫐', cat:'liquid', chars:{nic:'20mg Salt',vg:'70/30',vol:'30ml',brand:'Lost Mary'}, desc:'Сочный ягодный микс с освежающим послевкусием.', flavors:['Ягоды','Малина','Черника'] },
-  { id:2, name:'Vaporesso Kit', sub:'80W MOD', price:45, emoji:'⚡', cat:'pod', chars:{nic:'—',vg:'—',vol:'—',brand:'Vaporesso'}, desc:'Мощный мод 80Вт с регулировкой температуры и OLED дисплеем.', flavors:[] },
-  { id:3, name:'Mango Ice', sub:'20mg', price:16, emoji:'🥭', cat:'liquid', chars:{nic:'20mg Salt',vg:'70/30',vol:'30ml',brand:'ElfLiq'}, desc:'Тропическое манго с ледяным охлаждением.', flavors:['Манго','Лёд','Тропик'] },
-  { id:4, name:'Elf Bar 600', sub:'600 тяг', price:9, emoji:'🟣', cat:'disposable', chars:{nic:'20mg',vg:'50/50',vol:'2ml',brand:'Elf Bar'}, desc:'Компактная одноразка на 600 затяжек. 20+ вкусов.', flavors:['Blueberry Ice','Strawberry','Cola'] },
-  { id:5, name:'Mocha Latte', sub:'20mg', price:18, emoji:'☕', cat:'liquid', chars:{nic:'20mg Salt',vg:'70/30',vol:'30ml',brand:'FUMOT'}, desc:'Насыщенный кофейный вкус со сливочным послевкусием.', flavors:['Кофе','Сливки','Ваниль'] },
-  { id:6, name:'GeekVape Aegis', sub:'Aegis X2', price:54, emoji:'🔧', cat:'pod', chars:{nic:'—',vg:'—',vol:'—',brand:'GeekVape'}, desc:'IP68 защита, двойной аккумулятор 4000мАч.', flavors:[] },
-  { id:7, name:'Blackberry Ice', sub:'30ml Salt', price:19.9, emoji:'🫙', cat:'liquid', chars:{nic:'20mg Salt',vg:'50/50',vol:'30ml',brand:'Lost Mary'}, desc:'Насыщенный ягодный вкус с ледяным охлаждением.', flavors:['Ежевика','Лёд','Ягоды'] },
-  { id:8, name:'Lost Mary 5000', sub:'5000 тяг', price:22, emoji:'🖤', cat:'disposable', chars:{nic:'20mg',vg:'50/50',vol:'13ml',brand:'Lost Mary'}, desc:'Одноразка премиум-класса на 5000 затяжек.', flavors:['Watermelon Ice','Peach Mango','Lemon Mint'] },
-  { id:9, name:'Испаритель GTX', sub:'0.6Ω Mesh', price:8, emoji:'🔩', cat:'accessories', chars:{nic:'—',vg:'—',vol:'—',brand:'Vaporesso'}, desc:'Сетчатый испаритель для GTX Pod 22. Ресурс ~3 нед.', flavors:[] },
-  { id:10, name:'Картридж Nord', sub:'LP2 Pod', price:12, emoji:'🧪', cat:'accessories', chars:{nic:'—',vg:'—',vol:'—',brand:'SMOK'}, desc:'Картридж 2.5мл с испарителем 0.6Ω для Nord 5.', flavors:[] },
-  { id:11, name:'Батарейка 18650', sub:'3500mAh', price:6, emoji:'🔋', cat:'accessories', chars:{nic:'—',vg:'—',vol:'—',brand:'Samsung'}, desc:'Samsung 35E высокоёмкостная для мощных модов.', flavors:[] },
-  { id:12, name:'Vozol Neon 10000', sub:'10000 тяг', price:28, emoji:'🌟', cat:'disposable', chars:{nic:'20mg',vg:'50/50',vol:'23ml',brand:'Vozol'}, desc:'Мощная одноразка с RGB подсветкой и дисплеем.', flavors:['Blue Razz Lemonade','Strawberry Banana','Grape Ice'] },
-];
+// Можно оставить массив пустым, интерфейс будет работать, просто без товаров
+const PRODUCTS = [];
 
 let cart = [];
 let currentScreen = 'screen-home';
@@ -1811,19 +1811,31 @@ const adminOrders = [
 function renderProducts(gridId, products) {
   const grid = document.getElementById(gridId);
   if (!grid) return;
-  grid.innerHTML = products.map(p => `
+  grid.innerHTML = products.map(p => {
+    const hasFlavors = p.flavors && p.flavors.length > 0;
+    const isAcc = p.cat === 'accessories';
+    const label = isAcc ? 'Вид' : 'Вкус';
+    const flavorSelect = hasFlavors ? `
+      <div class="flavor-dropdown-wrap" onclick="event.stopPropagation()">
+        <select class="flavor-select" id="flavor-${p.id}">
+          <option value="">— Выберите ${label} —</option>
+          ${p.flavors.map(f => `<option value="${f}">${f}</option>`).join('')}
+        </select>
+      </div>` : '';
+    return `
     <div class="product-card" onclick="openDetail(${p.id})">
       <div class="product-img">${p.emoji}</div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
         <div class="product-sub">${p.sub}</div>
-        <div class="product-bottom">
+        ${flavorSelect}
+        <div class="product-bottom add-btn-row">
           <span class="product-price">$${p.price}</span>
           <button class="add-btn" onclick="event.stopPropagation();quickAddToCart(${p.id})">+</button>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function filterProducts(query) {
@@ -1929,14 +1941,33 @@ function toggleFav() {
 
 // ==================== CART ====================
 function quickAddToCart(id, silent) {
-  const existing = cart.find(i => i.id === id);
-  if (existing) existing.qty++;
-  else {
-    const p = PRODUCTS.find(x => x.id === id);
-    cart.push({ id, qty: 1, name: p.name, sub: p.sub, price: p.price, emoji: p.emoji });
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+
+  // Читаем выбранный вкус/вид из dropdown на карточке
+  let flavor = null;
+  const sel = document.getElementById('flavor-' + id);
+  if (sel) {
+    if (p.flavors && p.flavors.length > 0 && !sel.value) {
+      showToast('Выберите ' + (p.cat === 'accessories' ? 'вид' : 'вкус') + ' товара');
+      sel.focus();
+      sel.style.borderColor = 'var(--red)';
+      setTimeout(() => { sel.style.borderColor = ''; }, 2000);
+      return;
+    }
+    flavor = sel.value || null;
   }
+
+  // Ищем в корзине позицию с тем же id + вкусом
+  const existing = cart.find(i => i.id === id && i.flavor === flavor);
+  if (existing) existing.qty++;
+  else cart.push({ id, qty: 1, name: p.name, sub: p.sub, price: p.price, emoji: p.emoji, flavor });
+
   updateBadges();
-  if (!silent) showToast('Добавлено в корзину ✓');
+  if (!silent) {
+    const label = flavor ? ` (${flavor})` : '';
+    showToast(`${p.name}${label} добавлен в корзину ✓`);
+  }
 }
 
 function updateBadges() {
@@ -1960,7 +1991,7 @@ function renderCart() {
       <div class="cart-item-img">${item.emoji}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-sub">${item.sub}</div>
+        <div class="cart-item-sub">${item.flavor || item.sub}</div>
         <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
@@ -2000,10 +2031,24 @@ function removeCartItem(id) {
 }
 
 function checkout() {
+  if (!cart.length) return;
+  const order = {
+    items: cart.map(i => `${i.name}${i.flavor ? ' (' + i.flavor + ')' : ''} × ${i.qty}`).join(', '),
+    total: cart.reduce((s, i) => s + i.price * i.qty, 0),
+    status: 'new',
+    client: document.querySelector('.profile-name') ? document.querySelector('.profile-name').textContent : 'Клиент',
+    tgId: window.currentTgId || 'guest',
+    time: new Date().toLocaleString('ru')
+  };
+  if (window.fbSaveOrder) {
+    window.fbSaveOrder(order);
+    showToast('Заказ оформлен и отправлен! 🎉');
+  } else {
+    showToast('Заказ оформлен! 🎉');
+  }
   cart = [];
   updateBadges();
   renderCart();
-  showToast('Заказ оформлен! 🎉');
 }
 
 // ==================== UTILS ====================
@@ -2110,8 +2155,27 @@ function catLabel(cat) {
 
 function deleteAdminProduct(id) {
   adminProducts = adminProducts.filter(p => p.id !== id);
+  PRODUCTS.splice(PRODUCTS.findIndex(p => p.id === id), 1);
+  if (window.fbDeleteProduct) window.fbDeleteProduct(id);
   renderAdminProducts();
+  renderProducts('products-grid', PRODUCTS);
+  renderProducts('catalog-grid', PRODUCTS);
   showToast('Товар удалён');
+}
+
+function toggleAdminFields(cat) {
+  const flavorField = document.getElementById('field-flavors');
+  const accField = document.getElementById('field-acc-type');
+  if (cat === 'accessories') {
+    flavorField.style.display = 'none';
+    accField.style.display = 'block';
+  } else if (cat === 'pod') {
+    flavorField.style.display = 'none';
+    accField.style.display = 'none';
+  } else {
+    flavorField.style.display = 'block';
+    accField.style.display = 'none';
+  }
 }
 
 function addAdminProduct() {
@@ -2120,18 +2184,41 @@ function addAdminProduct() {
   const stock = parseInt(document.getElementById('new-stock').value);
   const cat = document.getElementById('new-cat').value;
   if (!name || !price || !stock) { showToast('Заполните все поля'); return; }
-  const emojis = {liquid:'💧',pod:'⚡',disposable:'🔋',accessories:'🔩'};
-  adminProducts.unshift({
+
+  const emojis = { liquid:'💧', pod:'⚡', disposable:'🔋', accessories:'🔩' };
+  let flavors = [], sub = 'Новый товар';
+
+  if (cat === 'accessories') {
+    const accType = document.getElementById('new-acc-type').value;
+    sub = accType;
+    flavors = [accType];
+  } else if (cat !== 'pod') {
+    const raw = document.getElementById('new-flavors').value.trim();
+    flavors = raw ? raw.split(',').map(f => f.trim()).filter(Boolean) : [];
+    sub = flavors.length ? flavors.slice(0,2).join(', ') : 'Новый товар';
+  }
+
+  const product = {
     id: Date.now(), name, price, stock, cat,
-    emoji: emojis[cat]||'📦',
-    sub:'Новый товар',
-    chars:{nic:'—',vg:'—',vol:'—',brand:'—'},
-    desc:'',flavors:[]
-  });
+    emoji: emojis[cat] || '📦',
+    sub, flavors,
+    chars: { nic:'—', vg:'—', vol:'—', brand:'—' },
+    desc: ''
+  };
+
+  adminProducts.unshift(product);
+  PRODUCTS.unshift(product);
+
+  // Сохраняем в Firebase
+  if (window.fbSaveProduct) window.fbSaveProduct(product);
+
   document.getElementById('new-name').value = '';
   document.getElementById('new-price').value = '';
   document.getElementById('new-stock').value = '';
+  if (document.getElementById('new-flavors')) document.getElementById('new-flavors').value = '';
   renderAdminProducts();
+  renderProducts('products-grid', PRODUCTS);
+  renderProducts('catalog-grid', PRODUCTS);
   showToast(`${name} добавлен ✓`);
 }
 
@@ -2206,62 +2293,36 @@ renderProducts('products-grid', PRODUCTS);
 <div class="toast" id="toast"></div>
 
 <script>
-/* =============================================
-   VapeShop Mini App — JavaScript
-   ============================================= */
-// ==================== DATA ====================
-const PRODUCTS = [
-  { id:1, name:'Berry Mix', sub:'20mg', price:16, emoji:'🫐', cat:'liquid', chars:{nic:'20mg Salt',vg:'70/30',vol:'30ml',brand:'Lost Mary'}, desc:'Сочный ягодный микс с освежающим послевкусием.', flavors:['Ягоды','Малина','Черника'] },
-  { id:2, name:'Vaporesso Kit', sub:'80W MOD', price:45, emoji:'⚡', cat:'pod', chars:{nic:'—',vg:'—',vol:'—',brand:'Vaporesso'}, desc:'Мощный мод 80Вт с регулировкой температуры и OLED дисплеем.', flavors:[] },
-  { id:3, name:'Mango Ice', sub:'20mg', price:16, emoji:'🥭', cat:'liquid', chars:{nic:'20mg Salt',vg:'70/30',vol:'30ml',brand:'ElfLiq'}, desc:'Тропическое манго с ледяным охлаждением.', flavors:['Манго','Лёд','Тропик'] },
-  { id:4, name:'Elf Bar 600', sub:'600 тяг', price:9, emoji:'🟣', cat:'disposable', chars:{nic:'20mg',vg:'50/50',vol:'2ml',brand:'Elf Bar'}, desc:'Компактная одноразка на 600 затяжек. 20+ вкусов.', flavors:['Blueberry Ice','Strawberry','Cola'] },
-  { id:5, name:'Mocha Latte', sub:'20mg', price:18, emoji:'☕', cat:'liquid', chars:{nic:'20mg Salt',vg:'70/30',vol:'30ml',brand:'FUMOT'}, desc:'Насыщенный кофейный вкус со сливочным послевкусием.', flavors:['Кофе','Сливки','Ваниль'] },
-  { id:6, name:'GeekVape Aegis', sub:'Aegis X2', price:54, emoji:'🔧', cat:'pod', chars:{nic:'—',vg:'—',vol:'—',brand:'GeekVape'}, desc:'IP68 защита, двойной аккумулятор 4000мАч.', flavors:[] },
-  { id:7, name:'Blackberry Ice', sub:'30ml Salt', price:19.9, emoji:'🫙', cat:'liquid', chars:{nic:'20mg Salt',vg:'50/50',vol:'30ml',brand:'Lost Mary'}, desc:'Насыщенный ягодный вкус с ледяным охлаждением.', flavors:['Ежевика','Лёд','Ягоды'] },
-  { id:8, name:'Lost Mary 5000', sub:'5000 тяг', price:22, emoji:'🖤', cat:'disposable', chars:{nic:'20mg',vg:'50/50',vol:'13ml',brand:'Lost Mary'}, desc:'Одноразка премиум-класса на 5000 затяжек.', flavors:['Watermelon Ice','Peach Mango','Lemon Mint'] },
-  { id:9, name:'Испаритель GTX', sub:'0.6Ω Mesh', price:8, emoji:'🔩', cat:'accessories', chars:{nic:'—',vg:'—',vol:'—',brand:'Vaporesso'}, desc:'Сетчатый испаритель для GTX Pod 22. Ресурс ~3 нед.', flavors:[] },
-  { id:10, name:'Картридж Nord', sub:'LP2 Pod', price:12, emoji:'🧪', cat:'accessories', chars:{nic:'—',vg:'—',vol:'—',brand:'SMOK'}, desc:'Картридж 2.5мл с испарителем 0.6Ω для Nord 5.', flavors:[] },
-  { id:11, name:'Батарейка 18650', sub:'3500mAh', price:6, emoji:'🔋', cat:'accessories', chars:{nic:'—',vg:'—',vol:'—',brand:'Samsung'}, desc:'Samsung 35E высокоёмкостная для мощных модов.', flavors:[] },
-  { id:12, name:'Vozol Neon 10000', sub:'10000 тяг', price:28, emoji:'🌟', cat:'disposable', chars:{nic:'20mg',vg:'50/50',vol:'23ml',brand:'Vozol'}, desc:'Мощная одноразка с RGB подсветкой и дисплеем.', flavors:['Blue Razz Lemonade','Strawberry Banana','Grape Ice'] },
-];
-
-let cart = [];
-let currentScreen = 'screen-home';
-let prevScreen = 'screen-home';
-let currentDetailId = null;
-let detailQty = 1;
-let favIds = new Set();
-let currentCat = 'all';
-let currentCatCatalog = 'all';
-
-// Admin data
-let adminProducts = [...PRODUCTS.map(p => ({...p, stock: Math.floor(Math.random()*20)+3}))];
-const adminOrders = [
-  { id:'#1047', time:'5 мин', client:'Иван С.', phone:'+7 999 111 22 33', items:'Blackberry Ice × 2, Mango Ice × 1', total:55.80, status:'new' },
-  { id:'#1046', time:'23 мин', client:'Мария П.', phone:'+7 926 555 77 88', items:'GeekVape Aegis × 1', total:54.00, status:'transit' },
-  { id:'#1045', time:'1 час', client:'Олег К.', phone:'+7 916 333 44 55', items:'Elf Bar 600 × 5, Berry Mix × 2', total:77.00, status:'done' },
-  { id:'#1044', time:'3 часа', client:'Анна Р.', phone:'+7 903 222 11 00', items:'Vaporesso Kit × 1, испаритель GTX × 2', total:61.00, status:'new' },
-  { id:'#1043', time:'5 часов', client:'Дима В.', phone:'+7 985 444 66 77', items:'Mocha Latte × 3', total:54.00, status:'transit' },
-  { id:'#1042', time:'Вчера', client:'Света М.', phone:'+7 912 777 88 99', items:'Lost Mary 5000 × 2, Vozol Neon × 1', total:72.00, status:'done' },
-];
-
+  
 // ==================== RENDER PRODUCTS ====================
 function renderProducts(gridId, products) {
   const grid = document.getElementById(gridId);
   if (!grid) return;
-  grid.innerHTML = products.map(p => `
+  grid.innerHTML = products.map(p => {
+    const hasFlavors = p.flavors && p.flavors.length > 0;
+    const isAcc = p.cat === 'accessories';
+    const label = isAcc ? 'Вид' : 'Вкус';
+    const flavorSelect = hasFlavors ? `
+      <div class="flavor-dropdown-wrap" onclick="event.stopPropagation()">
+        <select class="flavor-select" id="flavor-${p.id}">
+          <option value="">— Выберите ${label} —</option>
+          ${p.flavors.map(f => `<option value="${f}">${f}</option>`).join('')}
+        </select>
+      </div>` : '';
+    return `
     <div class="product-card" onclick="openDetail(${p.id})">
       <div class="product-img">${p.emoji}</div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
         <div class="product-sub">${p.sub}</div>
-        <div class="product-bottom">
+        ${flavorSelect}
+        <div class="product-bottom add-btn-row">
           <span class="product-price">$${p.price}</span>
           <button class="add-btn" onclick="event.stopPropagation();quickAddToCart(${p.id})">+</button>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function filterProducts(query) {
@@ -2367,14 +2428,33 @@ function toggleFav() {
 
 // ==================== CART ====================
 function quickAddToCart(id, silent) {
-  const existing = cart.find(i => i.id === id);
-  if (existing) existing.qty++;
-  else {
-    const p = PRODUCTS.find(x => x.id === id);
-    cart.push({ id, qty: 1, name: p.name, sub: p.sub, price: p.price, emoji: p.emoji });
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+
+  // Читаем выбранный вкус/вид из dropdown на карточке
+  let flavor = null;
+  const sel = document.getElementById('flavor-' + id);
+  if (sel) {
+    if (p.flavors && p.flavors.length > 0 && !sel.value) {
+      showToast('Выберите ' + (p.cat === 'accessories' ? 'вид' : 'вкус') + ' товара');
+      sel.focus();
+      sel.style.borderColor = 'var(--red)';
+      setTimeout(() => { sel.style.borderColor = ''; }, 2000);
+      return;
+    }
+    flavor = sel.value || null;
   }
+
+  // Ищем в корзине позицию с тем же id + вкусом
+  const existing = cart.find(i => i.id === id && i.flavor === flavor);
+  if (existing) existing.qty++;
+  else cart.push({ id, qty: 1, name: p.name, sub: p.sub, price: p.price, emoji: p.emoji, flavor });
+
   updateBadges();
-  if (!silent) showToast('Добавлено в корзину ✓');
+  if (!silent) {
+    const label = flavor ? ` (${flavor})` : '';
+    showToast(`${p.name}${label} добавлен в корзину ✓`);
+  }
 }
 
 function updateBadges() {
@@ -2398,7 +2478,7 @@ function renderCart() {
       <div class="cart-item-img">${item.emoji}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-sub">${item.sub}</div>
+        <div class="cart-item-sub">${item.flavor || item.sub}</div>
         <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
@@ -2438,10 +2518,24 @@ function removeCartItem(id) {
 }
 
 function checkout() {
+  if (!cart.length) return;
+  const order = {
+    items: cart.map(i => `${i.name}${i.flavor ? ' (' + i.flavor + ')' : ''} × ${i.qty}`).join(', '),
+    total: cart.reduce((s, i) => s + i.price * i.qty, 0),
+    status: 'new',
+    client: document.querySelector('.profile-name') ? document.querySelector('.profile-name').textContent : 'Клиент',
+    tgId: window.currentTgId || 'guest',
+    time: new Date().toLocaleString('ru')
+  };
+  if (window.fbSaveOrder) {
+    window.fbSaveOrder(order);
+    showToast('Заказ оформлен и отправлен! 🎉');
+  } else {
+    showToast('Заказ оформлен! 🎉');
+  }
   cart = [];
   updateBadges();
   renderCart();
-  showToast('Заказ оформлен! 🎉');
 }
 
 // ==================== UTILS ====================
@@ -2548,8 +2642,27 @@ function catLabel(cat) {
 
 function deleteAdminProduct(id) {
   adminProducts = adminProducts.filter(p => p.id !== id);
+  PRODUCTS.splice(PRODUCTS.findIndex(p => p.id === id), 1);
+  if (window.fbDeleteProduct) window.fbDeleteProduct(id);
   renderAdminProducts();
+  renderProducts('products-grid', PRODUCTS);
+  renderProducts('catalog-grid', PRODUCTS);
   showToast('Товар удалён');
+}
+
+function toggleAdminFields(cat) {
+  const flavorField = document.getElementById('field-flavors');
+  const accField = document.getElementById('field-acc-type');
+  if (cat === 'accessories') {
+    flavorField.style.display = 'none';
+    accField.style.display = 'block';
+  } else if (cat === 'pod') {
+    flavorField.style.display = 'none';
+    accField.style.display = 'none';
+  } else {
+    flavorField.style.display = 'block';
+    accField.style.display = 'none';
+  }
 }
 
 function addAdminProduct() {
@@ -2558,18 +2671,41 @@ function addAdminProduct() {
   const stock = parseInt(document.getElementById('new-stock').value);
   const cat = document.getElementById('new-cat').value;
   if (!name || !price || !stock) { showToast('Заполните все поля'); return; }
-  const emojis = {liquid:'💧',pod:'⚡',disposable:'🔋',accessories:'🔩'};
-  adminProducts.unshift({
+
+  const emojis = { liquid:'💧', pod:'⚡', disposable:'🔋', accessories:'🔩' };
+  let flavors = [], sub = 'Новый товар';
+
+  if (cat === 'accessories') {
+    const accType = document.getElementById('new-acc-type').value;
+    sub = accType;
+    flavors = [accType];
+  } else if (cat !== 'pod') {
+    const raw = document.getElementById('new-flavors').value.trim();
+    flavors = raw ? raw.split(',').map(f => f.trim()).filter(Boolean) : [];
+    sub = flavors.length ? flavors.slice(0,2).join(', ') : 'Новый товар';
+  }
+
+  const product = {
     id: Date.now(), name, price, stock, cat,
-    emoji: emojis[cat]||'📦',
-    sub:'Новый товар',
-    chars:{nic:'—',vg:'—',vol:'—',brand:'—'},
-    desc:'',flavors:[]
-  });
+    emoji: emojis[cat] || '📦',
+    sub, flavors,
+    chars: { nic:'—', vg:'—', vol:'—', brand:'—' },
+    desc: ''
+  };
+
+  adminProducts.unshift(product);
+  PRODUCTS.unshift(product);
+
+  // Сохраняем в Firebase
+  if (window.fbSaveProduct) window.fbSaveProduct(product);
+
   document.getElementById('new-name').value = '';
   document.getElementById('new-price').value = '';
   document.getElementById('new-stock').value = '';
+  if (document.getElementById('new-flavors')) document.getElementById('new-flavors').value = '';
   renderAdminProducts();
+  renderProducts('products-grid', PRODUCTS);
+  renderProducts('catalog-grid', PRODUCTS);
   showToast(`${name} добавлен ✓`);
 }
 
@@ -2639,58 +2775,155 @@ function changePassword() {
 
 renderProducts('products-grid', PRODUCTS);
 
-// ==================== TELEGRAM INIT ====================
-// Инициализация Telegram WebApp
-if (window.Telegram && window.Telegram.WebApp) {
-  window.Telegram.WebApp.ready();
-  window.Telegram.WebApp.expand(); // Разворачиваем на весь экран
+// ==================== CLEAR ORDERS ====================
+function clearOrders() {
+  const container = document.querySelector('#sub-orders .sub-content');
+  if (!container) return;
+  const cards = container.querySelectorAll('.order-card');
+  if (!cards.length) { showToast('История уже пуста'); return; }
+  cards.forEach(el => el.remove());
+  // Удаляем из Firebase если подключено
+  if (window.db) {
+    const tgId = window.currentTgId;
+    if (tgId) firebase.database().ref('orders/' + tgId).remove();
+  }
+  showToast('История заказов очищена 🗑');
 }
 
-// Определяем режим по URL параметру (?mode=admin)
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const mode = params.get('mode');
-  const screen = params.get('screen');
-
-  if (mode === 'admin') {
-    // Показываем админку, скрываем клиент
-    document.getElementById('client-app').style.display = 'none';
-    document.getElementById('admin-app').style.display = 'block';
-  } else {
-    // Показываем клиент (по умолчанию)
-    document.getElementById('client-app').style.display = 'block';
-    document.getElementById('admin-app').style.display = 'none';
-    // Если указан конкретный экран
-    if (screen === 'catalog') goTo('screen-catalog');
-    else if (screen === 'cart') goTo('screen-cart');
-  }
-})();
-
-
 // ==================== TELEGRAM INIT ====================
-(function() {
-  if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.ready();
-    window.Telegram.WebApp.expand();
+if (window.Telegram && window.Telegram.WebApp) {
+  window.Telegram.WebApp.ready();
+  window.Telegram.WebApp.expand();
+  const tgUser = window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user;
+  if (tgUser) {
+    window.currentTgId = tgUser.id;
+    const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ');
+    const username = tgUser.username ? '@' + tgUser.username : '—';
+    const profileName = document.querySelector('.profile-name');
+    const profileEmail = document.querySelector('.profile-email');
+    if (profileName) profileName.textContent = fullName || 'Пользователь';
+    if (profileEmail) profileEmail.textContent = tgUser.username ? '@' + tgUser.username : '';
+    const nameEl = document.getElementById('tg-name');
+    const usernameEl = document.getElementById('tg-username');
+    const idEl = document.getElementById('tg-id');
+    if (nameEl) nameEl.textContent = fullName || '—';
+    if (usernameEl) usernameEl.textContent = username;
+    if (idEl) idEl.textContent = tgUser.id || '—';
   }
+}
 
-  const params = new URLSearchParams(window.location.search);
-  const mode = params.get('mode');
-  const screen = params.get('screen');
+const params = new URLSearchParams(window.location.search);
+const mode = params.get('mode');
+const screen = params.get('screen');
 
-  const clientApp = document.getElementById('client-app');
-  const adminApp = document.getElementById('admin-app');
+const clientApp = document.getElementById('client-app');
+const adminApp = document.getElementById('admin-app');
 
-  if (mode === 'admin') {
-    if (clientApp) clientApp.style.display = 'none';
-    if (adminApp) { adminApp.style.display = 'block'; }
+if (mode === 'admin') {
+  if (clientApp) clientApp.style.display = 'none';
+  if (adminApp) adminApp.style.display = 'block';
+} else {
+  if (clientApp) clientApp.style.display = 'block';
+  if (adminApp) adminApp.style.display = 'none';
+  if (screen === 'catalog') goTo('screen-catalog');
+  else if (screen === 'cart') goTo('screen-cart');
+}
+</script>
+
+<!-- ================================================================
+     FIREBASE SDK
+     ================================================================
+     Как подключить:
+     1. Зайди на https://console.firebase.google.com
+     2. Создай проект (New project) → назови vapeshop
+     3. Перейди в Project Settings → Your apps → Web (</>)
+     4. Скопируй свой firebaseConfig и вставь ниже вместо заглушки
+     5. В Firebase Console → Realtime Database → Create database → Start in test mode
+     ================================================================ -->
+<script type="module">
+  // ⬇️ ВСТАВЬ СВОЙ КОНФИГ СЮДА (из Firebase Console → Project Settings)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDUXQzhYtstLYF4qVVaO7rOUPvR79xZ_sg",
+    authDomain: "vapeshop-5668d.firebaseapp.com",
+    databaseURL: "https://vapeshop-5668d-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "vapeshop-5668d",
+    storageBucket: "vapeshop-5668d.firebasestorage.app",
+    messagingSenderId: "4661960087095",
+    appId: "1:4661960087095:web:ff18eb9dee8cd147a79ab2",
+    measurementId: "G-35KD62N69P"
+  };
+
+  // Проверяем что конфиг заполнен
+  if (firebaseConfig.apiKey === 'ВСТАВЬ_API_KEY') {
+    console.warn('⚠️ Firebase не настроен. Работаем без базы данных.');
   } else {
-    if (clientApp) clientApp.style.display = 'block';
-    if (adminApp) adminApp.style.display = 'none';
-    if (screen === 'catalog') goTo('screen-catalog');
-    else if (screen === 'cart') goTo('screen-cart');
+    import('https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js').then(({ initializeApp }) => {
+    import('https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js').then(({
+      getDatabase, ref, set, get, onValue, remove, push
+    }) => {
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      window.db = db;
+
+      // ── Загружаем товары из Firebase ──────────────────────────
+      onValue(ref(db, 'products'), (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const fbProducts = Object.values(data);
+          // Очищаем и перезаполняем PRODUCTS из Firebase
+          PRODUCTS.length = 0;
+          fbProducts.forEach(p => PRODUCTS.push(p));
+          window.adminProducts = [...PRODUCTS];
+          renderProducts('products-grid', PRODUCTS);
+          renderProducts('catalog-grid', PRODUCTS);
+          renderAdminProducts && renderAdminProducts();
+          renderDashProducts && renderDashProducts();
+        }
+      });
+
+      // ── Загружаем заказы ──────────────────────────────────────
+      onValue(ref(db, 'orders'), (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const allOrders = [];
+          Object.entries(data).forEach(([userId, userOrders]) => {
+            Object.values(userOrders).forEach(o => allOrders.push(o));
+          });
+          allOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+          window.adminOrders = allOrders;
+          renderAdminOrders && renderAdminOrders('all');
+        }
+      });
+
+      // ── Функция сохранения товара ─────────────────────────────
+      window.fbSaveProduct = function(product) {
+        set(ref(db, 'products/' + product.id), product)
+          .then(() => console.log('Товар сохранён в Firebase'))
+          .catch(e => console.error('Ошибка Firebase:', e));
+      };
+
+      // ── Функция удаления товара ───────────────────────────────
+      window.fbDeleteProduct = function(productId) {
+        remove(ref(db, 'products/' + productId));
+      };
+
+      // ── Функция сохранения заказа ─────────────────────────────
+      window.fbSaveOrder = function(order) {
+        const userId = window.currentTgId || 'guest';
+        const orderRef = push(ref(db, 'orders/' + userId));
+        set(orderRef, { ...order, id: orderRef.key, timestamp: Date.now() });
+      };
+
+      // ── Обновление статуса заказа (для админки) ───────────────
+      window.fbUpdateOrderStatus = function(orderId, userId, status) {
+        set(ref(db, 'orders/' + userId + '/' + orderId + '/status'), status);
+      };
+
+      console.log('✅ Firebase подключён!');
+    });
+    });
   }
-})();
 </script>
 </body>
 </html>
